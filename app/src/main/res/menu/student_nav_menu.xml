@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/homeButton"
+        android:title="Home"
+        android:icon="@drawable/hometest"/>
+
+    <item android:id="@+id/bookmarkButton"
+        android:title="Bookmark"
+        android:icon="@drawable/hometest"/>
+
+    <item android:id="@+id/mailButton"
+        android:title="Mail"
+        android:icon="@drawable/hometest"/>
+
+    <item android:id="@+id/settingsButton"
+        android:title="Settings"
+        android:icon="@drawable/hometest"/>
+
+</menu>
