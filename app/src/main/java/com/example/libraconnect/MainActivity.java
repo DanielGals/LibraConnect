@@ -15,5 +15,6 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = new Intent(MainActivity.this, StudentHomeActivity.class);
         startActivity(intent);
+        //Tae utot
     }
 }
