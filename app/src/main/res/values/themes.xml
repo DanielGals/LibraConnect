@@ -6,4 +6,10 @@
     </style>
 
     <style name="Theme.LibraConnect" parent="Base.Theme.LibraConnect" />
+
+    <style name="CustomBottomNavStyle" parent="Widget.Design.BottomNavigationView">
+        <item name="itemIconTint">@color/orange</item> <!-- Set icon tint color -->
+        <item name="itemTextColor">@color/orange</item> <!-- Set text color -->
+    </style>
+
 </resources>

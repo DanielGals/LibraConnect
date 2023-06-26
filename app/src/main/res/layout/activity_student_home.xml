@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FCAF45"
     tools:context=".StudentHomeActivity">
 
     <FrameLayout
@@ -17,7 +18,8 @@
         android:id="@+id/studentBottomNav"
         android:layout_alignParentBottom="true"
         app:menu="@menu/student_nav_menu"
-
+        android:background="#000000"
+        style="@style/CustomBottomNavStyle"
         android:layout_height="wrap_content"/>
 
 </RelativeLayout>
