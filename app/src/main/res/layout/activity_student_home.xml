@@ -18,7 +18,7 @@
         android:id="@+id/studentBottomNav"
         android:layout_alignParentBottom="true"
         app:menu="@menu/student_nav_menu"
-        android:background="#000000"
+        android:background="#23262F"
         style="@style/CustomBottomNavStyle"
         android:layout_height="wrap_content"/>
 
