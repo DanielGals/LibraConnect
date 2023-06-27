@@ -70,10 +70,10 @@
         app:layout_constraintTop_toBottomOf="@+id/cardView"
         app:layout_constraintVertical_bias="0.199">
 
-    <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/borrowimg"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/borrowimg"/>
     </androidx.cardview.widget.CardView>
 
 
@@ -92,6 +92,73 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/readingimg"></LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+
+    <androidx.cardview.widget.CardView
+
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:backgroundTint="#FFA500"
+        android:layout_marginTop="-20dp"
+        app:cardCornerRadius="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/username">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/border">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Read Book Confirmation"
+                android:textSize="30dp"
+                android:textColor="@color/black"
+                android:textAlignment="center">
+            </TextView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+            <TextView
+                android:layout_marginTop="100dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="20dp"
+                android:text="Are you sure you want to read a book? \n\nPlease note that this action cannot be undone."
+                android:textAlignment="center">
+            </TextView>
+        </LinearLayout>
+
+
+        <Button
+            android:id="@+id/cancelreadbookBtn"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="X"
+            android:textSize="30dp"
+            android:backgroundTint="#ff0000"
+            android:layout_marginTop="230dp"
+            android:layout_marginLeft="20dp">
+        </Button>
+
+        <Button
+            android:id="@+id/checkreadbookBtn"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="✔"
+            android:backgroundTint="#32CD32"
+            android:textSize="30dp"
+            android:layout_marginTop="230dp"
+            android:layout_marginLeft="160dp">
+        </Button>
     </androidx.cardview.widget.CardView>
 
 
