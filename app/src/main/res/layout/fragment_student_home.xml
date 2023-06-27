@@ -7,9 +7,6 @@
     android:background="#FCAF45"
     tools:context=".StudentHomeFragment">
 
-
-
-
     <ImageView
         android:id="@+id/profileimg"
         android:layout_width="120dp"
