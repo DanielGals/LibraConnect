@@ -57,13 +57,13 @@ Please wait patiently for the librarian's response. They will review your reques
 further instructions on how to proceed with borrowing the book.
 In the meantime,feel free to explore our collection or browse
 for other interesting titles."
+            android:textColor="@color/black"
             android:textAlignment="center"
             android:textSize="20dp">
 
         </TextView>
 
     </LinearLayout>
-
 
     <Button
         android:layout_width="150dp"
