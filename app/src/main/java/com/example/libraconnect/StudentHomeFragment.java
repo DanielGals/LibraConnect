@@ -1,6 +1,5 @@
 package com.example.libraconnect;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -28,7 +27,7 @@ public class StudentHomeFragment extends Fragment {
     private CardView borrowbookCd;
     private CardView readbookCd;
 
-    confirm_borrow confirmBorrow = new confirm_borrow();
+    confirm_borrowing confirmBorrow = new confirm_borrowing();
     private CardView confirmBorrowDialog;
     private FirebaseAuth mAuth;
     private TextView displayUser;

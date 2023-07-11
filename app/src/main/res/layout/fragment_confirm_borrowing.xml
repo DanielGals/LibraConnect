@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FCAF45"
-    tools:context=".confirm_borrow">
+    tools:context=".confirm_borrowing">
 
     <androidx.cardview.widget.CardView
 
