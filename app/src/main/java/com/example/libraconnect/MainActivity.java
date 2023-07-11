@@ -4,87 +4,120 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.firebase.auth.OAuthProvider;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import static com.google.firebase.inappmessaging.internal.Logging.TAG;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class MainActivity extends AppCompatActivity {
 
-    private FirebaseAuth firebaseAuth;
+    private FirebaseAuth mAuth;
+
+    private static final String TAG = "MainActivity";
+    EditText emailLgn, passLgn;
+    Button loginBtn, createAcc;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        firebaseAuth = FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
 
-        Button signInButton = findViewById(R.id.signInButton);
+        //FirebaseAuth.getInstance().signOut();
+        emailLgn = (EditText) findViewById(R.id.emailLgn);
+        passLgn = (EditText) findViewById(R.id.passwordLgn);
+        loginBtn = (Button) findViewById(R.id.loginBtn);
+        createAcc = (Button) findViewById(R.id.createAccBtnR);
 
-        // Set an onClickListener to handle button clicks
-        signInButton.setOnClickListener(new View.OnClickListener() {
+
+        //Create Account Button
+        createAcc.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                // Start the sign-in flow when the button is clicked
-                // Check if the user is already signed in
-                if (firebaseAuth.getCurrentUser() != null) {
-                    // User is already signed in, handle accordingly
-                    handleSignInResult(firebaseAuth.getCurrentUser());
-                } else {
-                    // User is not signed in, start the sign-in flow
-                    startSignIn();
-                }
+            public void onClick(View view) {
+                //Intent intent = new Intent(MainActivity.this, CreateAccountPage.class);
+                //startActivity(intent);
             }
         });
 
+        loginBtn.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                String Semail = emailLgn.getText().toString().trim();
+                String Spass = passLgn.getText().toString().trim();
 
+                // Librarian Mode
+                if(Semail.equals("Library123") && Spass.equals("Library123"))
+                {
+                    //Intent intent = new Intent(MainActivity.this, AdminModeActivity.class);
+                    //startActivity(intent);
+                }
+                else
+                {
+                    signIn(Semail, Spass);
+                }
+            }
+        });
     }
-
-    // Method for initiating the sign-in flow
-    private void startSignIn() {
-        OAuthProvider.Builder provider = OAuthProvider.newBuilder("microsoft.com");
-
-        firebaseAuth.startActivityForSignInWithProvider(this, provider.build())
-                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+    private void signIn(String email, String password) {
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
-                    public void onSuccess(AuthResult authResult) {
-                        // User is signed in.
-                        handleSignInResult(authResult.getUser());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        String errorMessage = e.getMessage();
-                        // You can display the error message using a Toast or log it for debugging
-
-                        Toast.makeText(MainActivity.this, "Sign-in failed: " + errorMessage, Toast.LENGTH_SHORT).show();
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            Intent intent = new Intent(MainActivity.this, StudentHomeActivity.class);
+                            startActivity(intent);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            Toast.makeText(MainActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
     }
 
-    // Method for handling the sign-in result
-    private void handleSignInResult(FirebaseUser user) {
-        // Handle the sign-in result based on the user object
-        if (user != null) {
-            // User is signed in, handle accordingly
-            // Access user information using user.getDisplayName(), user.getEmail(), etc.
-            // Redirect to the desired activity
-            Intent intent = new Intent(MainActivity.this, StudentHomeActivity.class);
-            startActivity(intent);
-            finish(); // Optional: Finish the current activity to prevent going back to the sign-in screen
-        } else {
-            // Sign-in failed, handle accordingly
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        Log.d("IDcheck", "user logged in" + currentUser);
+        if(currentUser != null){
+            reload();
         }
     }
-    //FirebaseAuth.getInstance().signOut();
+
+    private void reload() {
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            Intent intent = new Intent(MainActivity.this, StudentHomeActivity.class);
+            startActivity(intent);
+        }
+    }
+
 }
