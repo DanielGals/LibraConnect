@@ -66,6 +66,7 @@ for other interesting titles."
     </LinearLayout>
 
     <Button
+        android:id="@+id/OkayButton"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="-20dp"

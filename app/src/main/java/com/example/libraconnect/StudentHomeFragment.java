@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -43,6 +44,8 @@ public class StudentHomeFragment extends Fragment {
         readbookCd = view.findViewById(R.id.readbookCd);
         confirmBorrowDialog = view.findViewById(R.id.confirmBorrowDialog);
         mAuth = FirebaseAuth.getInstance();
+        cancelborrowbookBtn = view.findViewById(R.id.cancelborrowbookBtn);
+        checkborrowbookBtn = view.findViewById(R.id.checkborrowbookBtn);
 
         // Move this line here
         confirmBorrowDialog.setVisibility(View.INVISIBLE);
@@ -50,31 +53,79 @@ public class StudentHomeFragment extends Fragment {
         borrowbookCd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                confirmBorrowDialog.setVisibility(View.VISIBLE);
 
-                cancelborrowbookBtn = view.findViewById(R.id.cancelborrowbookBtn);
-                checkborrowbookBtn = view.findViewById(R.id.checkborrowbookBtn);
 
-                cancelborrowbookBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        confirmBorrowDialog.setVisibility(View.INVISIBLE);
+                //Check if the user isRequesting
+                // Else you should just tell him that he is currently onhold
+
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+                String uid = user.getUid();
+                DocumentReference userRef = db.collection("students").document(uid);
+
+                userRef.get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            boolean isAccepted = document.getBoolean("isAccepted");
+                            boolean isRequesting = document.getBoolean("isRequesting");
+                            if(isAccepted)
+                            {
+                                numberofbooks fragment2 = new numberofbooks();
+                                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                fragmentTransaction.replace(R.id.student_frameLayout, fragment2);
+                                fragmentTransaction.addToBackStack(null);
+                                fragmentTransaction.commit();
+                            }
+                            if (isRequesting) {
+                                // User is requesting
+                                // Perform the desired actions here
+                                isborrowing fragment2 = new isborrowing();
+                                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                fragmentTransaction.replace(R.id.student_frameLayout, fragment2);
+                                fragmentTransaction.addToBackStack(null);
+                                fragmentTransaction.commit();
+                            }
+                            else {
+                                // User is not requesting
+                                // Perform the desired actions here
+                                confirmBorrowDialog.setVisibility(View.VISIBLE);
+
+
+                                cancelborrowbookBtn.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        confirmBorrowDialog.setVisibility(View.INVISIBLE);
+                                    }
+                                });
+
+                                checkborrowbookBtn.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        userRef.update("isRequesting", true);
+                                        confirm_borrowing fragment2 = new confirm_borrowing();
+                                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                        fragmentTransaction.replace(R.id.student_frameLayout, fragment2);
+                                        fragmentTransaction.addToBackStack(null);
+                                        fragmentTransaction.commit();
+
+                                    }
+                                });
+                            }
+                        } else {
+                            // User document does not exist
+                        }
+                    } else {
+                        // Error getting user document
                     }
                 });
 
-                checkborrowbookBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        confirm_borrowing confirmBorrow = new confirm_borrowing(); // Update with the correct fragment class name
 
-                        // Open the new fragment
-                        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                        fragmentTransaction.replace(R.id.student_frameLayout, confirmBorrow);
-                        fragmentTransaction.addToBackStack(null); // Optional, to add the fragment to the back stack
-                        fragmentTransaction.commit();
-                    }
-                });
+
             }
         });
 
@@ -106,6 +157,7 @@ public class StudentHomeFragment extends Fragment {
                         String username = document.getString("name");
 
                         // Use the username string as needed
+                        Log.d("Yows", "onComplete: " + username);
                         displayUser.setText(username);
                     } else {
                         Log.d("TAG", "No such document");
