@@ -5,6 +5,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,8 +35,7 @@ public class StudentHomeFragment extends Fragment {
     private TextView displayUser;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_student_home, container, false);
 
         displayUser = view.findViewById(R.id.usernameTV);
@@ -42,7 +43,6 @@ public class StudentHomeFragment extends Fragment {
         readbookCd = view.findViewById(R.id.readbookCd);
         confirmBorrowDialog = view.findViewById(R.id.confirmBorrowDialog);
         mAuth = FirebaseAuth.getInstance();
-
 
         // Move this line here
         confirmBorrowDialog.setVisibility(View.INVISIBLE);
@@ -65,7 +65,14 @@ public class StudentHomeFragment extends Fragment {
                 checkborrowbookBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        getSupportFragmentManager().beginTransaction().replace(R.id.student_frameLayout, confirmBorrow).commit();
+                        confirm_borrowing confirmBorrow = new confirm_borrowing(); // Update with the correct fragment class name
+
+                        // Open the new fragment
+                        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        fragmentTransaction.replace(R.id.student_frameLayout, confirmBorrow);
+                        fragmentTransaction.addToBackStack(null); // Optional, to add the fragment to the back stack
+                        fragmentTransaction.commit();
                     }
                 });
             }
@@ -74,10 +81,9 @@ public class StudentHomeFragment extends Fragment {
         readbookCd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                // Handle the click event for readbookCd if needed
             }
         });
-
 
         displayUserName(view);
         return view;
