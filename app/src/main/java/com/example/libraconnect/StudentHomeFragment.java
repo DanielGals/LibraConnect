@@ -26,12 +26,16 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class StudentHomeFragment extends Fragment {
 
-    private Button cancelborrowbookBtn, checkborrowbookBtn;
+    private Button cancelborrowbookBtn, checkborrowbookBtn, cancelreadbookBtn, checkreadbookBtn;
     private CardView borrowbookCd;
     private CardView readbookCd;
 
+
+
     confirm_borrowing confirmBorrow = new confirm_borrowing();
     private CardView confirmBorrowDialog;
+
+    private CardView confirmReadDialog;
     private FirebaseAuth mAuth;
     private TextView displayUser;
 
@@ -43,12 +47,17 @@ public class StudentHomeFragment extends Fragment {
         borrowbookCd = view.findViewById(R.id.borrowbookCd);
         readbookCd = view.findViewById(R.id.readbookCd);
         confirmBorrowDialog = view.findViewById(R.id.confirmBorrowDialog);
+        confirmReadDialog = view.findViewById(R.id.confirmReadDialog);
         mAuth = FirebaseAuth.getInstance();
         cancelborrowbookBtn = view.findViewById(R.id.cancelborrowbookBtn);
         checkborrowbookBtn = view.findViewById(R.id.checkborrowbookBtn);
+        cancelreadbookBtn = view.findViewById(R.id.cancelreadbookBtn);
+        checkreadbookBtn = view.findViewById(R.id.checkreadbookBtn);
+
 
         // Move this line here
         confirmBorrowDialog.setVisibility(View.INVISIBLE);
+        confirmReadDialog.setVisibility(View.INVISIBLE);
 
         borrowbookCd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,8 +77,8 @@ public class StudentHomeFragment extends Fragment {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
-                            boolean isAccepted = document.getBoolean("isAccepted");
-                            boolean isRequesting = document.getBoolean("isRequesting");
+                            boolean isAccepted = document.getBoolean("isAcceptedBorrow");
+                            boolean isRequesting = document.getBoolean("isRequestingBorrow");
                             if(isAccepted)
                             {
                                 numberofbooks fragment2 = new numberofbooks();
@@ -105,7 +114,7 @@ public class StudentHomeFragment extends Fragment {
                                 checkborrowbookBtn.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        userRef.update("isRequesting", true);
+                                        userRef.update("isRequestingBorrow", true);
                                         confirm_borrowing fragment2 = new confirm_borrowing();
                                         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -133,6 +142,87 @@ public class StudentHomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 // Handle the click event for readbookCd if needed
+
+
+                //Check if the user isRequesting
+                // Else you should just tell him that he is currently onhold
+
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+                String uid = user.getUid();
+                DocumentReference userRef = db.collection("students").document(uid);
+
+                userRef.get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            boolean isAccepted = document.getBoolean("isAcceptedRead");
+                            boolean isRequesting = document.getBoolean("isRequestingRead");
+                            if(isAccepted)
+                            {
+                                library_pass fragment2 = new library_pass();
+                                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                fragmentTransaction.replace(R.id.student_frameLayout, fragment2);
+                                fragmentTransaction.addToBackStack(null);
+                                fragmentTransaction.commit();
+                            }
+                            if (isRequesting) {
+                                // User is requesting
+                                onprocessreading fragment2 = new onprocessreading();
+                                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                fragmentTransaction.replace(R.id.student_frameLayout, fragment2);
+                                fragmentTransaction.addToBackStack(null);
+                                fragmentTransaction.commit();
+                            }
+                            else {
+                                // User is not requesting
+                                // Perform the desired actions here
+                                confirmReadDialog.setVisibility(View.VISIBLE);
+
+
+                                cancelreadbookBtn.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        confirmReadDialog.setVisibility(View.INVISIBLE);
+                                    }
+                                });
+
+                                checkreadbookBtn.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        //UPDATE FIREBASE
+                                        userRef.update("isRequestingRead", true);
+
+                                        //Move to new Fragment
+                                        confirm_reading fragment2 = new confirm_reading();
+                                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                        fragmentTransaction.replace(R.id.student_frameLayout, fragment2);
+                                        fragmentTransaction.addToBackStack(null);
+                                        fragmentTransaction.commit();
+
+                                    }
+                                });
+                            }
+                        } else {
+                            // User document does not exist
+                        }
+                    } else {
+                        // Error getting user document
+                    }
+                });
+
+
+
+
+
+
+
+
+
             }
         });
 

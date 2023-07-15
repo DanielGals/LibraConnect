@@ -52,6 +52,14 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+
+    //QRCODE
+
+    //implementation 'net.glxn.qrgen:android:3.2.0' //QR CODE
+    implementation 'com.google.zxing:core:3.4.1'
+    //implementation 'com.journeyapps:zxing-android-embedded:4.2.0'
+    //QRCODE
+
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
 }
